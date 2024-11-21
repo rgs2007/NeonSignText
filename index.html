@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Sign Text</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Lobster&family=Dancing+Script&family=Roboto:wght@700&family=Montserrat&family=Monoton&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Monoton', cursive;
+            position: relative;
+        }
+
+        .neon-text.large {
+            font-size: 15vw;
+            color: #fff;
+            text-transform: uppercase;
+            text-align: center;
+            margin: 20px;
+            transition: 0.3s;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 10px #ff0080,
+                0 0 20px #ff0080,
+                0 0 40px #ff0080,
+                0 0 80px #ff0080,
+                0 0 90px #ff0080;
+        }
+
+        .neon-text.small {
+            font-size: 4vw;
+            color: #fff;
+            text-transform: uppercase;
+            text-align: center;
+            margin: 10px;
+            transition: 0.3s;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 10px #ff0080,
+                0 0 20px #ff0080,
+                0 0 40px #ff0080,
+                0 0 80px #ff0080,
+                0 0 90px #ff0080;
+        }
+
+        .neon-input {
+            padding: 10px;
+            font-size: 1.2em;
+            text-align: center;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        .font-select {
+            padding: 10px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+
+        .font-option {
+            font-family: inherit;
+        }
+
+        .download-button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #ff0080;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .apply-button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #00ff00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .gradient-control {
+            width: 100%;
+            max-width: 300px;
+            height: 20px;
+            background: linear-gradient(90deg, #ff0080, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .popup {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 400px;
+            height: 500px;
+            background-color: #111;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.7);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: move;
+        }
+
+        .popup-header {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .popup-minimize {
+            cursor: pointer;
+            background: #ff0080;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            position: absolute;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="popup" id="popup">
+        <div class="popup-header">
+            <h3 style="color: #fff; margin: 0; text-align: center; flex: 1;">Controls</h3>
+            <button class="popup-minimize" id="popupMinimize">Hide Controls</button>
+        </div>
+        <input class="neon-input" type="text" id="neonInput" placeholder="Enter text here...">
+        <select class="font-select" id="fontSelect">
+            <option class="font-option" style="font-family: 'Pacifico';" value="Pacifico">Pacifico</option>
+            <option class="font-option" style="font-family: 'Lobster';" value="Lobster">Lobster</option>
+            <option class="font-option" style="font-family: 'Dancing Script';" value="Dancing Script">Dancing Script</option>
+            <option class="font-option" style="font-family: 'Roboto';" value="Roboto Bold">Roboto Bold</option>
+            <option class="font-option" style="font-family: 'Montserrat';" value="Montserrat">Montserrat</option>
+            <option class="font-option" style="font-family: 'Monoton';" value="Monoton" selected>Monoton</option>
+        </select>
+        <div class="gradient-control" id="gradientControl"></div>
+        <button class="apply-button" id="applyButton">Apply to Large Sign</button>
+        <button class="download-button" id="downloadButton">Save as Image</button>
+        <div class="neon-text small" id="smallNeonText">Neon Sign</div>
+    </div>
+
+    <div class="neon-text large" id="largeNeonText">Neon Sign</div>
+
+    <script>
+        const neonInput = document.getElementById('neonInput');
+        const fontSelect = document.getElementById('fontSelect');
+        const gradientControl = document.getElementById('gradientControl');
+        const applyButton = document.getElementById('applyButton');
+        const smallNeonText = document.getElementById('smallNeonText');
+        const largeNeonText = document.getElementById('largeNeonText');
+        const popup = document.getElementById('popup');
+        const popupMinimize = document.getElementById('popupMinimize');
+        const downloadButton = document.getElementById('downloadButton');
+
+        neonInput.addEventListener('input', function() {
+            smallNeonText.textContent = this.value || 'Neon Sign';
+        });
+
+        fontSelect.addEventListener('change', function() {
+            smallNeonText.style.fontFamily = this.value;
+        });
+
+        gradientControl.addEventListener('mousemove', function(event) {
+            const rect = gradientControl.getBoundingClientRect();
+            const offsetX = event.clientX - rect.left;
+            const percentage = offsetX / rect.width;
+            const hue = Math.round(percentage * 360);
+            smallNeonText.style.textShadow = `
+                0 0 5px hsl(${hue}, 100%, 50%),
+                0 0 10px hsl(${hue}, 100%, 50%),
+                0 0 20px hsl(${hue}, 100%, 50%),
+                0 0 40px hsl(${hue}, 100%, 50%),
+                0 0 80px hsl(${hue}, 100%, 50%),
+                0 0 90px hsl(${hue}, 100%, 50%)`;
+        });
+
+        applyButton.addEventListener('click', function() {
+            largeNeonText.textContent = smallNeonText.textContent;
+            largeNeonText.style.fontFamily = smallNeonText.style.fontFamily;
+            largeNeonText.style.textShadow = smallNeonText.style.textShadow;
+        });
+
+        downloadButton.addEventListener('click', function() {
+            html2canvas(largeNeonText, {backgroundColor: '#000'}).then(function(canvas) {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'neon-sign.png';
+                link.click();
+            });
+        });
+
+        popupMinimize.addEventListener('click', function() {
+            if (popup.style.height === '50px') {
+                popup.style.height = '550px';
+                popup.style.overflow = 'visible';
+                popupMinimize.textContent = 'Hide Controls';
+            } else {
+                popup.style.height = '50px';
+                popup.style.overflow = 'hidden';
+                popupMinimize.textContent = 'Display Controls';
+            }
+        });
+
+        // Make popup draggable
+        popup.addEventListener('mousedown', function(event) {
+            let shiftX = event.clientX - popup.getBoundingClientRect().left;
+            let shiftY = event.clientY - popup.getBoundingClientRect().top;
+
+            function moveAt(pageX, pageY) {
+                popup.style.left = pageX - shiftX + 'px';
+                popup.style.top = pageY - shiftY + 'px';
+            }
+
+            function onMouseMove(event) {
+                moveAt(event.pageX, event.pageY);
+            }
+
+            document.addEventListener('mousemove', onMouseMove);
+
+            popup.onmouseup = function() {
+                document.removeEventListener('mousemove', onMouseMove);
+                popup.onmouseup = null;
+            };
+        });
+
+        popup.ondragstart = function() {
+            return false;
+        };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>
